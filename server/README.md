@@ -31,6 +31,7 @@ The server uses the following environment variables:
 - `MONGODB_CLUSTER_URL` - The URL for the MongoDB cluster
 - `PORT` - The port to run the server on (client expects the server to run on port 8080)
 - `DEMO_MODE` - Whether to run the server in demo mode
+- `GITHUB_API_KEY` - Your API key for accessing the GitHub model API
 
 ## API Endpoints
 
