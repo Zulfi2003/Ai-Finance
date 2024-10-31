@@ -17,6 +17,7 @@ This personal finance application allows users to seamlessly connect their bank 
 	•	Plaid API
 	•	Jest
 	•	OpenAI API - Utilized for generating financial advice and insights through AI models.
+ 	•	Clerk API Key: Sign up on Clerk to obtain an API key for user authentication.
 
 :books: Requirements
 
@@ -26,6 +27,7 @@ This personal finance application allows users to seamlessly connect their bank 
 	•	npm or Yarn: You will need npm (which comes with Node.js) or Yarn to install dependencies. Install npm through Node.js or get Yarn from Yarn’s official site.
 	•	Plaid API Keys: You will need to create an account on Plaid and obtain your API keys.
 	•	OpenAI API Key: Sign up on OpenAI to obtain an API key for accessing the AI model used for generating financial advice.
+ 	•	CLERK_API_KEY= # Add your Clerk API key here
 
 :rocket: Getting Started
 
