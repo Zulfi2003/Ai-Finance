@@ -1,0 +1,85 @@
+const dotenv = require("dotenv");
+const OpenAI = require("openai");
+const Sentiment = require('sentiment');
+const { addChatRecord } = require('../models/chat');
+const mongoose = require('mongoose');
+
+dotenv.config();
+const sentiment = new Sentiment();
+const openai = new OpenAI({
+  apiKey: process.env.NVIDIA_API_KEY, // Use environment variable for NVIDIA API Key
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+});
+
+// const fetchUserContext = async (userId) => {
+//   try {
+//     const context = await mongoose.models.Context.findOne({ userId });
+//     return context || {};
+//   } catch (error) {
+//     console.error("Error fetching user context:", error);
+//     return {};
+//   }
+// };
+
+// const saveUserContext = async (userId, contextData) => {
+//   try {
+//     await mongoose.models.Context.updateOne(
+//       { userId },
+//       { $set: contextData },
+//       { upsert: true }
+//     );
+//   } catch (error) {
+//     console.error("Error saving user context:", error);
+//   }
+// };
+
+const getSentimentScore = (text) => {
+  const result = sentiment.analyze(text);
+  return result.score;
+};
+
+const getFinancialAdvice = async (userId, totalBudget, totalIncome, totalSpend, userQuery) => {
+  try {
+    // const userContext = await fetchUserContext(userId);
+    const sentimentScore = getSentimentScore(userQuery);
+    const tone = sentimentScore < 0 ? "encouraging" : "neutral";
+
+    // Based on previous user data: ${JSON.stringify(userContext)}.
+    const userPrompt = `
+        You are a helpful and ${tone} financial assistant.
+        Current financial data:
+        - Total Budget: ${totalBudget} USD
+        - Expenses: ${totalSpend} USD
+        - Income: ${totalIncome} USD
+        User query: ${userQuery}
+        Provide financial advice considering the user's context and sentiment.
+    `;
+
+    const completion = await openai.chat.completions.create({
+      model: "nvidia/nemotron-4-340b-instruct",
+      messages: [
+        { role: "system", content: "You are a helpful financial assistant." },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.2,
+      top_p: 0.7,
+      max_tokens: 1024,
+      stream: true,
+    });
+
+    let advice = '';
+    for await (const chunk of completion) {
+      advice += chunk.choices[0]?.delta?.content || '';
+    }
+
+    // await saveUserContext(userId, { ...userContext, lastQuery: userQuery, lastAdvice: advice });
+    // await addChatRecord(userId, userQuery, advice);
+
+    return advice;
+  } catch (error) {
+    console.error("Error fetching financial advice:", error.response ? error.response.data : error.message);
+    return "Error retrieving advice. Please try again later.";
+  }
+};
+
+module.exports = getFinancialAdvice;
