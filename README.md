@@ -83,6 +83,7 @@ Here you can link your bank accounts and start tracking your financial transacti
 
 	•	Bank Account Integration: Securely link your bank accounts using the Plaid API.
 	•	Financial Dashboard: Visualize your cash flows, transactions, and account balances in one place.
+ 	•	User Authentication: Use Clerk for managing user authentication and access.
 	•	AI-Powered Insights: Leverage the OpenAI API for personalized financial advice based on user data and queries.
 	•	Demo Mode: Test the application with mock data without needing real bank connections.
 
